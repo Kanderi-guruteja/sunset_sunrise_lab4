@@ -3,7 +3,7 @@ function searchLocation() {
   const location = locationInput.value;
 
   // Geocode API without an API key
-  const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}`;
+  const geocodeUrl = `https://geocode.maps.co/search?q={address};
 
   fetch(geocodeUrl)
     .then(response => response.json())
