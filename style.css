@@ -1,43 +1,48 @@
 body {
-  background: #42212F;
-  color: #D1D1D1;
-  font-family: Arial, sans-serif;
-  text-align: center;
+  background: #fafafa;
+  font-family: 'Arial', sans-serif;
 }
 
 .container {
+  text-align: center;
   max-width: 600px;
-  margin: 2em auto;
-  padding: 1em;
-  background-color: #662B61;
-  border-radius: 10px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 label {
-  display: block;
-  margin-bottom: 0.5em;
-  color: #D1D1D1;
+  font-size: 16px;
+  margin-right: 10px;
 }
 
 input {
-  width: 80%;
-  padding: 0.5em;
-  margin-bottom: 1em;
+  padding: 8px;
+  font-size: 14px;
 }
 
 button {
-  background-color: #662B61;
-  color: #D1D1D1;
-  padding: 0.5em 1em;
+  padding: 8px 16px;
+  font-size: 16px;
+  background: #007bff;
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-#sunrise-sunset-info {
-  margin-top: 2em;
+button:hover {
+  background: #0056b3;
 }
 
-.error {
-  color: red;
+#sunrise-sunset-info {
+  margin-top: 20px;
 }
+
+p {
+  font-size: 16px;
+}
+
+/* Add more styles as needed */
