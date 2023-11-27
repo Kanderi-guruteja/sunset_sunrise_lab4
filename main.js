@@ -5,17 +5,11 @@ const MILLIS_SECOND = 1000;
 const MILLIS_MINUTE = 60 * MILLIS_SECOND;
 const MILLIS_HOUR = 60 * MILLIS_MINUTE;
 const MILLIS_DAY = 24 * MILLIS_HOUR;
-const DEFAULT_POSITION = {
-  coords: {
-    latitude: 37.7749,
-    longitude: -122.4194,
-  },
-};
 
 // main
 function searchLocation() {
   const locationInput = document.getElementById('location');
-  const location = locationInput.value;
+  const location = locationInput.value.trim();
 
   if (!location) {
     alert('Please enter a location.');
@@ -31,20 +25,27 @@ function searchLocation() {
  * @param {String} location location to search.
  */
 function fetchGeocode(location) {
-  const geocodeApiKey = ''; // Replace with your OpenCage API key
-  const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${geocodeApiKey}`;
+  const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}`;
 
   quickFetch(
     geocodeUrl,
     response => {
-      const position = {
-        coords: {
-          latitude: response.results[0].geometry.lat,
-          longitude: response.results[0].geometry.lng,
-        },
-      };
-      fetchSunriseSunset(position);
+      if (response.results.length > 0) {
+        const position = {
+          coords: {
+            latitude: response.results[0].geometry.lat,
+            longitude: response.results[0].geometry.lng,
+          },
+        };
+        fetchSunriseSunset(position);
+      } else {
+        alert('Location not found.');
+      }
     },
+    error => {
+      console.error('Error fetching geocode:', error);
+      alert('An error occurred while fetching geocode information.');
+    }
   );
 }
 
@@ -68,9 +69,7 @@ function fetchSunriseSunset(position) {
 function fetchSunriseSunsetForDate(position, date) {
   const yyyyMMdd =
     `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  const sunriseSunsetApiKey = ''; // Replace with your Sunrise Sunset API key
-
-  const sunriseSunsetUrl = `https://api.sunrisesunset.io/json?lat=${position.coords.latitude}&lng=${position.coords.longitude}&date=${yyyyMMdd}&formatted=0&key=${sunriseSunsetApiKey}`;
+  const sunriseSunsetUrl = `https://api.sunrisesunset.io/json?lat=${position.coords.latitude}&lng=${position.coords.longitude}&date=${yyyyMMdd}&formatted=0`;
 
   quickFetch(
     sunriseSunsetUrl,
@@ -83,6 +82,10 @@ function fetchSunriseSunsetForDate(position, date) {
         <!-- Add more information as needed -->
       `;
     },
+    error => {
+      console.error('Error fetching sunrise/sunset:', error);
+      alert('An error occurred while fetching sunrise/sunset information.');
+    }
   );
 }
 
@@ -90,11 +93,12 @@ function fetchSunriseSunsetForDate(position, date) {
  * A wrapper of `fetch` function in default GET method.
  *
  * @param {String} url ampersand-separated key-value pairs.
- * @param {Function} listener callback to handle the response.
+ * @param {Function} successListener callback to handle the successful response.
+ * @param {Function} errorListener callback to handle errors.
  */
-function quickFetch(url, listener) {
+function quickFetch(url, successListener, errorListener) {
   fetch(url)
     .then(result => result.json())
-    .then(listener)
-    .catch(error => console.error('Error:', error));
+    .then(successListener)
+    .catch(error => errorListener(error));
 }
