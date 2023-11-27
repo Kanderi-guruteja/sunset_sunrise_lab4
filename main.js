@@ -7,6 +7,13 @@ const MILLIS_HOUR = 60 * MILLIS_MINUTE;
 const MILLIS_DAY = 24 * MILLIS_HOUR;
 
 // main
+document.addEventListener('DOMContentLoaded', () => {
+  // Load default location (New York) on page load
+  const defaultLocation = 'New York';
+  document.getElementById('location').value = defaultLocation;
+  searchLocation();
+});
+
 function searchLocation() {
   const locationInput = document.getElementById('location');
   const location = locationInput.value.trim();
@@ -16,71 +23,35 @@ function searchLocation() {
     return;
   }
 
-  fetchGeocode(location);
-}
-
-/**
- * A REST call to obtain location.
- *
- * @param {String} location location to search.
- */
-function fetchGeocode(location) {
-  const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}`;
-
-  quickFetch(
-    geocodeUrl,
-    response => {
-      if (response.results.length > 0) {
-        const position = {
-          coords: {
-            latitude: response.results[0].geometry.lat,
-            longitude: response.results[0].geometry.lng,
-          },
-        };
-        fetchSunriseSunset(position);
-      } else {
-        alert('Location not found.');
-      }
-    },
-    error => {
-      console.error('Error fetching geocode:', error);
-      alert('An error occurred while fetching geocode information.');
-    }
-  );
+  fetchSunriseSunset(location);
 }
 
 /**
  * A REST call to obtain time events.
  *
- * @param {Object} position a parameter of Geolocation API.
+ * @param {String} location location to search.
  */
-function fetchSunriseSunset(position) {
+function fetchSunriseSunset(location) {
   const today = new Date();
-
-  fetchSunriseSunsetForDate(position, today);
-}
-
-/**
- * A REST call to obtain time events for a specific date.
- *
- * @param {Object} position a parameter of Geolocation API.
- * @param {Date} date target date.
- */
-function fetchSunriseSunsetForDate(position, date) {
   const yyyyMMdd =
-    `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  const sunriseSunsetUrl = `https://api.sunrisesunset.io/json?lat=${position.coords.latitude}&lng=${position.coords.longitude}&date=${yyyyMMdd}&formatted=0`;
+    `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+  const sunriseSunsetUrl = `https://api.sunrisesunset.io/json?q=${encodeURIComponent(location)}&date=${yyyyMMdd}&formatted=0`;
 
   quickFetch(
     sunriseSunsetUrl,
     response => {
-      // Display sunrise and sunset data
-      const infoContainer = document.getElementById('sunrise-sunset-info');
-      infoContainer.innerHTML = `
-        <p>Sunrise: ${new Date(response.results.sunrise).toLocaleTimeString()}</p>
-        <p>Sunset: ${new Date(response.results.sunset).toLocaleTimeString()}</p>
-        <!-- Add more information as needed -->
-      `;
+      if (response.results) {
+        // Display sunrise and sunset data
+        const infoContainer = document.getElementById('sunrise-sunset-info');
+        infoContainer.innerHTML = `
+          <p>Location: ${location}</p>
+          <p>Sunrise: ${new Date(response.results.sunrise).toLocaleTimeString()}</p>
+          <p>Sunset: ${new Date(response.results.sunset).toLocaleTimeString()}</p>
+          <!-- Add more information as needed -->
+        `;
+      } else {
+        alert('Location not found.');
+      }
     },
     error => {
       console.error('Error fetching sunrise/sunset:', error);
