@@ -1,5 +1,14 @@
 "use strict";
 
+// Constants for New York coordinates
+const NEW_YORK_LATITUDE = 40.7128;
+const NEW_YORK_LONGITUDE = -74.0060;
+
+// Geocoding API endpoints
+const GEOCODE_API_ENDPOINT = 'https://geocode.maps.co';
+const FORWARD_GEOCODE_URL = `${GEOCODE_API_ENDPOINT}/search?q=`;
+const REVERSE_GEOCODE_URL = `${GEOCODE_API_ENDPOINT}/reverse?lat={latitude}&lon={longitude}`;
+
 // static fields
 const MILLIS_SECOND = 1000;
 const MILLIS_MINUTE = 60 * MILLIS_SECOND;
@@ -23,19 +32,46 @@ function searchLocation() {
     return;
   }
 
-  fetchSunriseSunset(location);
+  fetchCoordinates(location);
+}
+
+/**
+ * Fetch coordinates using forward geocoding.
+ *
+ * @param {String} address Location to search.
+ */
+function fetchCoordinates(address) {
+  const forwardGeocodeUrl = `${FORWARD_GEOCODE_URL}${encodeURIComponent(address)}`;
+
+  quickFetch(
+    forwardGeocodeUrl,
+    response => {
+      if (response.features && response.features.length > 0) {
+        const coordinates = response.features[0].geometry.coordinates;
+        fetchSunriseSunset(address, coordinates[1], coordinates[0]);
+      } else {
+        alert('Location not found.');
+      }
+    },
+    error => {
+      console.error('Error fetching coordinates:', error);
+      alert('An error occurred while fetching coordinates.');
+    }
+  );
 }
 
 /**
  * A REST call to obtain time events.
  *
- * @param {String} location location to search.
+ * @param {String} location Location to search.
+ * @param {Number} latitude Latitude of the location.
+ * @param {Number} longitude Longitude of the location.
  */
-function fetchSunriseSunset(location) {
+function fetchSunriseSunset(location, latitude, longitude) {
   const today = new Date();
   const yyyyMMdd =
     `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-  const sunriseSunsetUrl = `https://api.sunrisesunset.io/json?q=${encodeURIComponent(location)}&date=${yyyyMMdd}&formatted=0`;
+  const sunriseSunsetUrl = `https://api.sunrisesunset.io/json?lat=${latitude}&lng=${longitude}&date=${yyyyMMdd}&formatted=0`;
 
   quickFetch(
     sunriseSunsetUrl,
@@ -50,7 +86,7 @@ function fetchSunriseSunset(location) {
           <!-- Add more information as needed -->
         `;
       } else {
-        alert('Location not found.');
+        alert('Sunrise/sunset information not available.');
       }
     },
     error => {
@@ -63,7 +99,7 @@ function fetchSunriseSunset(location) {
 /**
  * A wrapper of `fetch` function in default GET method.
  *
- * @param {String} url ampersand-separated key-value pairs.
+ * @param {String} url URL to fetch.
  * @param {Function} successListener callback to handle the successful response.
  * @param {Function} errorListener callback to handle errors.
  */
