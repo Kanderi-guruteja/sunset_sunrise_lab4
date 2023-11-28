@@ -3,20 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sunrise Sunset Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Sunrise Sunset API Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Sunrise and Sunset Dashboard</h1>
-    <label for="location">Enter Location:</label>
-    <input type="text" id="location" placeholder="Enter a location" value="New York">
-    <button onclick="searchLocation()">Search</button>
+    <h1>Sunrise Sunset API Dashboard</h1>
 
-    <!-- Display sunrise and sunset data here -->
-    <div id="sunrise-sunset-info"></div>
+    <div class="location-search">
+      <label for="location">Enter Location:</label>
+      <input type="text" id="location" placeholder="Enter city or address">
+      <button id="search-btn">Search</button>
+    </div>
+
+    <div class="geolocation-btn">
+      <button id="geolocation-btn">Use Current Location</button>
+    </div>
+
+    <div class="dashboard">
+      <div class="location-details">
+        <h2 id="location-name">Location Name</h2>
+        <p id="current-date-time">Current Date and Time</p>
+      </div>
+
+      <div class="sunrise-sunset">
+        <div class="today">
+          <h3>Today</h3>
+          <ul>
+            <li><span>Sunrise:</span> <span id="sunrise-today"></span></li>
+            <li><span>Sunset:</span> <span id="sunset-today"></span></li>
+            <li><span>Dawn:</span> <span id="dawn-today"></span></li>
+            <li><span>Dusk:</span> <span id="dusk-today"></span></li>
+            <li><span>Day Length:</span> <span id="day-length-today"></span></li>
+          </ul>
+        </div>
+
+        <div class="tomorrow">
+          <h3>Tomorrow</h3>
+            <ul>
+      <li><span>Sunrise:</span> <span id="sunrise-tomorrow"></span></li>
+      <li><span>Sunset:</span> <span id="sunset-tomorrow"></span></li>
+      <li><span>Dawn:</span> <span id="dawn-tomorrow"></span></li>
+      <li><span>Dusk:</span> <span id="dusk-tomorrow"></span></li>
+      <li><span>Day Length:</span> <span id="day-length-tomorrow"></span></li>
+    </ul>
   </div>
+</div>
 
-  <script src="main.js"></script>
-</body>
-</html>
+<div class="solar-noon">
+  <h3>Solar Noon</h3>
+  <ul>
+    <li><span>Today:</span> <span id="solar-noon-today"></span></li>
+    <li><span>Tomorrow:</span> <span id="solar-noon-tomorrow"></span></li>
+  </ul>
+</div>
