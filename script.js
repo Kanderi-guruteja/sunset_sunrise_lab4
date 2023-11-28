@@ -6,7 +6,7 @@ $(document).ready(function () {
       url: geocodeApiUrl,
       method: "GET",
       success: function (geocodeData) {
-        const results = geocodeData;
+        const results = geocodeData.results;
         console.log(results);
 
         if (results && results.length > 0) {
