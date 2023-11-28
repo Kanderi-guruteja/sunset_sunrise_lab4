@@ -1,5 +1,4 @@
 const API_URL = 'https://api.sunrisesunset.io/json';
-const GEOCODING_API_URL = 'https://geocode.maps.co/search';
 
 function getLocationCoordinates(address) {
   const params = {
@@ -7,7 +6,7 @@ function getLocationCoordinates(address) {
     format: 'json'
   };
 
-  const url = new URL(GEOCODING_API_URL);
+  const url = new URL('https://geocode.maps.co/search');
   url.search = new URLSearchParams(params).toString();
 
   return fetch(url)
@@ -63,12 +62,12 @@ function getSunriseSunsetData(coordinates) {
 }
 
 function updateSunriseSunsetData(sunrise, sunset, dawn, dusk, solarNoon, dayLength) {
-  document.getElementById('sunrise').innerHTML = sunrise;
-  document.getElementById('sunset').innerHTML = sunset;
-  document.getElementById('dawn').innerHTML = dawn;
-  document.getElementById('dusk').innerHTML = dusk;
-  document.getElementById('solarNoon').innerHTML = solarNoon;
-  document.getElementById('dayLength').innerHTML = dayLength;
+  document.getElementById('sunrise').textContent = sunrise;
+  document.getElementById('sunset').textContent = sunset;
+  document.getElementById('dawn').textContent = dawn;
+  document.getElementById('dusk').textContent = dusk;
+  document.getElementById('solarNoon').textContent = solarNoon;
+  document.getElementById('dayLength').textContent = dayLength;
 }
 
 function initialize() {
