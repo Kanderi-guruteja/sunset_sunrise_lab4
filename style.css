@@ -25,13 +25,13 @@ h1 {
   margin-bottom: 20px;
 }
 
-#location {
+#locationInput {
   flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
 }
 
-#search-btn {
+#searchLocation {
   padding: 10px;
   background-color: #007bff;
   color: #fff;
@@ -44,7 +44,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-#geolocation-btn {
+#getCurrentLocation {
   padding: 10px;
   background-color: #28a745;
   color: #fff;
@@ -52,14 +52,20 @@ h1 {
   cursor: pointer;
 }
 
-/* Dashboard Styles */
-.dashboard {
-  background-color: #f2f2f2;
-  padding: 20px;
+/* Date Selection Styles */
+.date-selection {
+  margin-bottom: 20px;
 }
 
-/* Location Details Styles */
-.location-details {
+#dateSelector {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+/* Result Styles */
+.result {
+  background-color: #f2f2f2;
+  padding: 20px;
   margin-bottom: 20px;
 }
 
@@ -70,5 +76,9 @@ h2 {
 
 p {
   font-size: 14px;
-  margin-bottom: 0;
+  margin-bottom: 5px;
+}
+
+.error-message {
+  color: red;
 }
