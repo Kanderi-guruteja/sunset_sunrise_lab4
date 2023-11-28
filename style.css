@@ -5,12 +5,14 @@ body {
   padding: 0;
 }
 
+/* Container Styles */
 .container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
 }
 
+/* Heading Styles */
 h1 {
   text-align: center;
   font-size: 24px;
@@ -56,6 +58,7 @@ h1 {
   padding: 20px;
 }
 
+/* Location Details Styles */
 .location-details {
   margin-bottom: 20px;
 }
@@ -68,43 +71,4 @@ h2 {
 p {
   font-size: 14px;
   margin-bottom: 0;
-}
-
-.sunrise-sunset {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-.today, .tomorrow {
-  flex: 1;
-}
-
-h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 5px;
-}
-
-span {
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-/* Solar Noon Styles */
-.solar-noon {
-  margin-top: 20px;
-}
-
-h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
 }
