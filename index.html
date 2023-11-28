@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunrise Sunset Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunrise Sunset API Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="container">
+    <h1>Sunrise Sunset API Dashboard</h1>
 
-<div class="container">
-    <h1>Sunrise Sunset Dashboard</h1>
+    <div class="location-search">
+      <label for="location">Enter Location:</label>
+      <input type="text" id="locationInput" placeholder="Enter city or address">
+      <button id="searchLocation">Search</button>
 
-    <div class="controls">
-        <label for="locationInput">Location:</label>
-        <input type="text" id="locationInput" placeholder="Enter location">
-
-        <label for="dateSelector">Date:</label>
-        <input type="date" id="dateSelector">
-
-        <button id="searchLocation">Search Location</button>
-        <button id="getCurrentLocation">Get Current Location</button>
+      <div class="geolocation-btn">
+        <button id="getCurrentLocation">Use Current Location</button>
+      </div>
     </div>
 
-    <div id="result" class="result-container"></div>
-</div>
+    <div class="date-selection">
+      <label for="dateSelector">Select Date:</label>
+      <input type="date" id="dateSelector">
+    </div>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="script.js"></script>
-
+    <div class="result" id="result"></div>
+  </div>
 </body>
 </html>
