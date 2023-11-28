@@ -1,38 +1,47 @@
 $(document).ready(function () {
-  function fetchLocationCoordinates(location) {
-    const geocodeApiUrl = `https://geocode.maps.co/search?q=${encodeURIComponent(location)}`;
+  const GEOCODE_API_URL = "https://geocode.maps.co/search?q=";
+  const SUNRISE_SUNSET_API_URL = "https://api.sunrisesunset.io/json";
 
-    $.get(geocodeApiUrl)
-      .done(function (geocodeData) {
-        if (geocodeData.results && geocodeData.results.length > 0) {
-          const { lat, lon } = geocodeData.results[0];
+  function fetchCoordinatesFromLocation(location) {
+    const encodedLocation = encodeURIComponent(location);
+    const geocodeUrl = `${GEOCODE_API_URL}${encodedLocation}`;
+
+    $.ajax({
+      url: geocodeUrl,
+      method: "GET",
+      success: function (geocodeData) {
+        const results = geocodeData.results;
+        console.log(results);
+
+        if (results && results.length > 0) {
+          const firstResult = results[0];
+          const latitude = firstResult.lat;
+          const longitude = firstResult.lon;
           const selectedDate = $("#dateSelector").val();
-          fetchSunriseSunsetData(lat, lon, selectedDate);
+          fetchSunriseSunsetData(latitude, longitude, selectedDate);
         } else {
           displayError("Location not found.");
         }
-      })
-      .fail(function (error) {
-        console.error("Geocode API Error:", error.status);
-        displayError(`Geocode API Error: ${error.status}`);
-      });
+      },
+      error: function (error) {
+        displayError(`Geocode API Error: ${error.responseJSON.status}`);
+      },
+    });
   }
 
   function fetchSunriseSunsetData(latitude, longitude, date) {
-    const sunriseSunsetApiUrl = `https://api.sunrisesunset.io/json?lat=${latitude}&lng=${longitude}&formatted=0&date=${date}`;
+    const sunriseSunsetUrl = `${SUNRISE_SUNSET_API_URL}?lat=${latitude}&lng=${longitude}&formatted=0&date=${date}`;
 
-    $.get(sunriseSunsetApiUrl)
-      .done(function (data) {
-        if (data.results) {
-          updateDashboard(data.results);
-        } else {
-          displayError("Sunrise Sunset data not available for the selected location.");
-        }
-      })
-      .fail(function (error) {
-        console.error("Sunrise Sunset API Error:", error.status);
-        displayError(`Sunrise Sunset API Error: ${error.status}`);
-      });
+    $.ajax({
+      url: sunriseSunsetUrl,
+      method: "GET",
+      success: function (data) {
+        updateDashboard(data.results);
+      },
+      error: function (error) {
+        displayError(`Sunrise Sunset API Error: ${error.responseJSON.status}`);
+      },
+    });
   }
 
   function updateDashboard(results) {
@@ -58,12 +67,12 @@ $(document).ready(function () {
   $("#getCurrentLocation").click(function () {
     navigator.geolocation.getCurrentPosition(
       function (position) {
-        const { latitude, longitude } = position.coords;
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
         const selectedDate = $("#dateSelector").val();
         fetchSunriseSunsetData(latitude, longitude, selectedDate);
       },
       function (error) {
-        console.error("Geolocation Error:", error.message);
         displayError(`Geolocation Error: ${error.message}`);
       }
     );
@@ -71,14 +80,14 @@ $(document).ready(function () {
 
   $("#searchLocation").click(function () {
     const location = $("#locationInput").val();
-    fetchLocationCoordinates(location);
+    fetchCoordinatesFromLocation(location);
   });
 
   $("#dateSelector").change(function () {
     const selectedDate = $("#dateSelector").val();
     const location = $("#locationInput").val();
     if (location) {
-      fetchLocationCoordinates(location);
+      fetchCoordinatesFromLocation(location);
     }
   });
 });
