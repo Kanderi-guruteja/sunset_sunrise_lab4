@@ -2,7 +2,7 @@ const API_URL = 'https://api.sunrisesunset.io/json';
 
 function getLocationCoordinates(address) {
   if (address) {
-    // Forward geocoding for specified address
+    // Forward geocoding for the specified address
     const params = {
       q: address,
       format: 'json'
@@ -14,30 +14,33 @@ function getLocationCoordinates(address) {
     return fetch(url)
       .then(response => response.json())
       .then(data => {
-        if (data.status === 'OK') {
+        if (data.status === 'OK' && data.results.length > 0) {
           const results = data.results[0];
           const latitude = results.latitude;
           const longitude = results.longitude;
 
-          return { latitude, longitude };
+          getSunriseSunsetData({ latitude, longitude });
         } else {
-          throw new Error('Geocoding failed');
+          throw new Error('Geocoding failed or no results found');
         }
       })
       .catch(error => {
         console.error('Error fetching coordinates:', error);
       });
   } else {
-    // Reverse geocoding for current location
+    // Reverse geocoding for the current location
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
 
-        getSunriseSunsetData({ latitude, longitude });
-      }, error => {
-        console.error('Error getting current location:', error);
-      });
+          getSunriseSunsetData({ latitude, longitude });
+        },
+        error => {
+          console.error('Error getting current location:', error);
+        }
+      );
     } else {
       console.error('Geolocation not supported by this browser');
     }
@@ -79,12 +82,12 @@ function getSunriseSunsetData(coordinates) {
 }
 
 function updateSunriseSunsetData(sunrise, sunset, dawn, dusk, solarNoon, dayLength) {
-  document.getElementById('sunrise').textContent = sunrise;
-  document.getElementById('sunset').textContent = sunset;
-  document.getElementById('dawn').textContent = dawn;
-  document.getElementById('dusk').textContent = dusk;
-  document.getElementById('solarNoon').textContent = solarNoon;
-  document.getElementById('dayLength').textContent = dayLength;
+  document.getElementById('sunrise').textContent = `Sunrise: ${sunrise}`;
+  document.getElementById('sunset').textContent = `Sunset: ${sunset}`;
+  document.getElementById('dawn').textContent = `Dawn: ${dawn}`;
+  document.getElementById('dusk').textContent = `Dusk: ${dusk}`;
+  document.getElementById('solarNoon').textContent = `Solar Noon: ${solarNoon}`;
+  document.getElementById('dayLength').textContent = `Day Length: ${dayLength}`;
 }
 
 function initialize() {
