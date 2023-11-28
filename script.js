@@ -1,16 +1,12 @@
 $(document).ready(function () {
-  const GEOCODE_API_URL = "https://geocode.maps.co/search?q=";
-  const SUNRISE_SUNSET_API_URL = "https://api.sunrisesunset.io/json";
-
   function fetchCoordinatesFromLocation(location) {
-    const encodedLocation = encodeURIComponent(location);
-    const geocodeUrl = `${GEOCODE_API_URL}${encodedLocation}`;
+    const geocodeApiUrl = `https://geocode.maps.co/search?q=${encodeURIComponent(location)}`;
 
     $.ajax({
-      url: geocodeUrl,
+      url: geocodeApiUrl,
       method: "GET",
       success: function (geocodeData) {
-        const results = geocodeData.results;
+        const results = geocodeData;
         console.log(results);
 
         if (results && results.length > 0) {
@@ -30,10 +26,10 @@ $(document).ready(function () {
   }
 
   function fetchSunriseSunsetData(latitude, longitude, date) {
-    const sunriseSunsetUrl = `${SUNRISE_SUNSET_API_URL}?lat=${latitude}&lng=${longitude}&formatted=0&date=${date}`;
+    const sunriseSunsetApiUrl = `https://api.sunrisesunset.io/json?lat=${latitude}&lng=${longitude}&formatted=0&date=${date}`;
 
     $.ajax({
-      url: sunriseSunsetUrl,
+      url: sunriseSunsetApiUrl,
       method: "GET",
       success: function (data) {
         updateDashboard(data.results);
