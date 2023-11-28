@@ -6,20 +6,22 @@ $(document).ready(function () {
       url: geocodeApiUrl,
       method: "GET",
       success: function (geocodeData) {
-        const results = geocodeData.results;
-        console.log(results);
+        console.log("Geocode API Response:", geocodeData);
 
+        const results = geocodeData.results;
         if (results && results.length > 0) {
           const firstResult = results[0];
           const latitude = firstResult.lat;
           const longitude = firstResult.lon;
           const selectedDate = $("#dateSelector").val();
+          console.log("Location Coordinates:", latitude, longitude);
           fetchSunriseSunsetData(latitude, longitude, selectedDate);
         } else {
           displayError("Location not found.");
         }
       },
       error: function (error) {
+        console.error("Geocode API Error:", error.responseJSON.status);
         displayError(`Geocode API Error: ${error.responseJSON.status}`);
       },
     });
@@ -32,9 +34,11 @@ $(document).ready(function () {
       url: sunriseSunsetApiUrl,
       method: "GET",
       success: function (data) {
+        console.log("Sunrise Sunset API Response:", data);
         updateDashboard(data.results);
       },
       error: function (error) {
+        console.error("Sunrise Sunset API Error:", error.responseJSON.status);
         displayError(`Sunrise Sunset API Error: ${error.responseJSON.status}`);
       },
     });
@@ -66,9 +70,11 @@ $(document).ready(function () {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const selectedDate = $("#dateSelector").val();
+        console.log("Current Location Coordinates:", latitude, longitude);
         fetchSunriseSunsetData(latitude, longitude, selectedDate);
       },
       function (error) {
+        console.error("Geolocation Error:", error.message);
         displayError(`Geolocation Error: ${error.message}`);
       }
     );
@@ -76,6 +82,7 @@ $(document).ready(function () {
 
   $("#searchLocation").click(function () {
     const location = $("#locationInput").val();
+    console.log("Search Location:", location);
     fetchLocationCoordinates(location);
   });
 
@@ -83,6 +90,7 @@ $(document).ready(function () {
     const selectedDate = $("#dateSelector").val();
     const location = $("#locationInput").val();
     if (location) {
+      console.log("Selected Date:", selectedDate);
       fetchLocationCoordinates(location);
     }
   });
