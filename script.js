@@ -4,9 +4,8 @@ $(document).ready(function () {
 
     $.get(geocodeApiUrl)
       .done(function (geocodeData) {
-        const results = geocodeData.results;
-        if (results && results.length > 0) {
-          const { lat, lon } = results[0];
+        if (geocodeData.results && geocodeData.results.length > 0) {
+          const { lat, lon } = geocodeData.results[0];
           const selectedDate = $("#dateSelector").val();
           fetchSunriseSunsetData(lat, lon, selectedDate);
         } else {
@@ -24,7 +23,11 @@ $(document).ready(function () {
 
     $.get(sunriseSunsetApiUrl)
       .done(function (data) {
-        updateDashboard(data.results);
+        if (data.results) {
+          updateDashboard(data.results);
+        } else {
+          displayError("Sunrise Sunset data not available for the selected location.");
+        }
       })
       .fail(function (error) {
         console.error("Sunrise Sunset API Error:", error.status);
