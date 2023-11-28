@@ -1,111 +1,104 @@
-"use strict";
+const API_URL = "https://api.sunrise-sunset.org/json";
 
-// Constants for New York coordinates
-const NEW_YORK_LATITUDE = 40.7128;
-const NEW_YORK_LONGITUDE = -74.0060;
+// Get location from user input or geolocation
+function getLocation() {
+  let locationInput = document.getElementById('location').value;
+  if (locationInput) {
+    return locationInput;
+  } else {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  }
+}
 
-// Geocoding API endpoints
-const GEOCODE_API_ENDPOINT = 'https://geocode.maps.co';
-const FORWARD_GEOCODE_URL = `${GEOCODE_API_ENDPOINT}/search?q=`;
-const REVERSE_GEOCODE_URL = `${GEOCODE_API_ENDPOINT}/reverse?lat={latitude}&lon={longitude}`;
+// Display location and current date and time
+function showPosition(position) {
+  let lat = position.coords.latitude;
+  let lng = position.coords.longitude;
+  getSunriseSunsetData(lat, lng);
 
-// static fields
-const MILLIS_SECOND = 1000;
-const MILLIS_MINUTE = 60 * MILLIS_SECOND;
-const MILLIS_HOUR = 60 * MILLIS_MINUTE;
-const MILLIS_DAY = 24 * MILLIS_HOUR;
+  let currentDateTime = new Date();
+  let formattedDate = currentDateTime.toLocaleDateString();
+  let formattedTime = currentDateTime.toLocaleTimeString();
+  document.getElementById('location-name').innerHTML = 'Your Current Location';
+  document.getElementById('current-date-time').innerHTML = formattedDate + ' ' + formattedTime;
+}
 
-// main
-document.addEventListener('DOMContentLoaded', () => {
-  // Load default location (New York) on page load
-  const defaultLocation = 'New York';
-  document.getElementById('location').value = defaultLocation;
-  searchLocation();
+// Display error message for geolocation failure
+function showError(error) {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      alert('You have denied access to your location.');
+      break;
+    case error.POSITION_UNAVAILABLE:
+      alert('Your location information is unavailable.');
+      break;
+    case error.TIMEOUT:
+      alert('The request to get your location timed out.');
+      break;
+    default:
+      alert('An unknown error occurred.');
+  }
+}
+
+// Fetch sunrise and sunset data from the API
+function getSunriseSunsetData(lat, lng) {
+  let params = {
+    lat: lat,
+    lng: lng,
+    date: new Date().toISOString().slice(0, 10),
+    formatted: '1'
+  };
+
+  let url = new URL(API_URL);
+  url.search = new URLSearchParams(params).toString();
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      let sunriseToday = data.results.sunrise;
+      let sunsetToday = data.results.sunset;
+      let dawnToday = data.results.civilTwilightBegin;
+      let duskToday = data.results.civilTwilightEnd;
+      let dayLengthToday = data.results.dayLength;
+
+       let sunriseTomorrow = data.results.sunrise.slice(0, 10) + data.results.sunrise.slice(11);
+      let sunsetTomorrow = data.results.sunset.slice(0, 10) + data.results.sunset.slice(11);
+      let dawnTomorrow = data.results.civilTwilightBegin.slice(0, 10) + data.results.civilTwilightBegin.slice(11);
+      let duskTomorrow = data.results.civilTwilightEnd.slice(0, 10) + data.results.civilTwilightEnd.slice(11);
+      let dayLengthTomorrow = data.results.dayLength;
+
+      document.getElementById('sunrise-today').innerHTML = sunriseToday;
+      document.getElementById('sunset-today').innerHTML = sunsetToday;
+      document.getElementById('dawn-today').innerHTML = dawnToday;
+      document.getElementById('dusk-today').innerHTML = duskToday;
+      document.getElementById('day-length-today').innerHTML = dayLengthToday;
+
+      document.getElementById('sunrise-tomorrow').innerHTML = sunriseTomorrow;
+      document.getElementById('sunset-tomorrow').innerHTML = sunsetTomorrow;
+      document.getElementById('dawn-tomorrow').innerHTML = dawnTomorrow;
+      document.getElementById('dusk-tomorrow').innerHTML = duskTomorrow;
+      document.getElementById('day-length-tomorrow').innerHTML = dayLengthTomorrow;
+    })
+    .catch(error => {
+      console.error('Error fetching sunrise and sunset data:', error);
+    });
+}
+
+// Add event listener for search button
+const searchBtn = document.getElementById('search-btn');
+searchBtn.addEventListener('click', () => {
+  let locationInput = document.getElementById('location').value;
+  if (locationInput) {
+    getSunriseSunsetData(locationInput);
+  }
 });
 
-function searchLocation() {
-  const locationInput = document.getElementById('location');
-  const location = locationInput.value.trim();
-
-  if (!location) {
-    alert('Please enter a location.');
-    return;
-  }
-
-  fetchCoordinates(location);
-}
-
-/**
- * Fetch coordinates using forward geocoding.
- *
- * @param {String} address Location to search.
- */
-function fetchCoordinates(address) {
-  const forwardGeocodeUrl = `${FORWARD_GEOCODE_URL}${encodeURIComponent(address)}`;
-
-  quickFetch(
-    forwardGeocodeUrl,
-    response => {
-      if (response.features && response.features.length > 0) {
-        const coordinates = response.features[0].geometry.coordinates;
-        fetchSunriseSunset(address, coordinates[1], coordinates[0]);
-      } else {
-        alert('Location not found.');
-      }
-    },
-    error => {
-      console.error('Error fetching coordinates:', error);
-      alert('An error occurred while fetching coordinates.');
-    }
-  );
-}
-
-/**
- * A REST call to obtain time events.
- *
- * @param {String} location Location to search.
- * @param {Number} latitude Latitude of the location.
- * @param {Number} longitude Longitude of the location.
- */
-function fetchSunriseSunset(location, latitude, longitude) {
-  const today = new Date();
-  const yyyyMMdd =
-    `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-  const sunriseSunsetUrl = `https://api.sunrisesunset.io/json?lat=${latitude}&lng=${longitude}&date=${yyyyMMdd}&formatted=0`;
-
-  quickFetch(
-    sunriseSunsetUrl,
-    response => {
-      if (response.results) {
-        // Display sunrise and sunset data
-        const infoContainer = document.getElementById('sunrise-sunset-info');
-        infoContainer.innerHTML = `
-          <p>Location: ${location}</p>
-          <p>Sunrise: ${new Date(response.results.sunrise).toLocaleTimeString()}</p>
-          <p>Sunset: ${new Date(response.results.sunset).toLocaleTimeString()}</p>
-          <!-- Add more information as needed -->
-        `;
-      } else {
-        alert('Sunrise/sunset information not available.');
-      }
-    },
-    error => {
-      console.error('Error fetching sunrise/sunset:', error);
-      alert('An error occurred while fetching sunrise/sunset information.');
-    }
-  );
-}
-
-/**
- * A wrapper of `fetch` function in default GET method.
- *
- * @param {String} url URL to fetch.
- * @param {Function} successListener callback to handle the successful response.
- * @param {Function} errorListener callback to handle errors.
- */
-function quickFetch(url, successListener, errorListener) {
-  fetch(url)
-    .then(result => result.json())
-    .then(successListener)
-    .catch(error => errorListener(error));
-}
+// Add event listener for geolocation button
+const geolocationBtn = document.getElementById('geolocation-btn');
+geolocationBtn.addEventListener('click', () => {
+  getLocation();
+});
