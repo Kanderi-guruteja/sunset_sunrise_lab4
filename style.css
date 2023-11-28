@@ -1,88 +1,95 @@
+/* General Styles */
 body {
-    font-family: "Arial", sans-serif;
-    margin: 0;
-    padding: 0;
-    background: url("sunset-body-water-with-mountain-background.jpg");
-    background-size: cover;
-  }
-  
-  .container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #eaeaea;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.7);
-  }
-  
-  .app-title {
-    color: #333;
-    text-align: center;
-  }
-  
-  .button {
-    padding: 10px;
-    margin: 10px 0;
-    cursor: pointer;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-  }
-  
-  .search-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .label {
-    margin-bottom: 10px;
-  }
-  
-  .input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-  }
-  
-  .search-button {
-    background-color: #27ae60;
-    color: #fff;
-    width: 100%;
-  }
-  
-  .result-container {
-    margin-top: 20px;
-    padding: 15px;
-    background: #fff;
-    border-radius: 4px;
-  }
-  
-  .error-message {
-    color: red;
-  }
-  
-  @media screen and (max-width: 600px) {
-    body {
-      background-size: 190vh;
-    }
-    .container {
-      margin: 20px;
-      padding: 10px;
-    }
-  
-    .search-container {
-      flex-direction: column;
-      align-items: stretch;
-    }
-  
-    .input,
-    .search-button {
-      width: auto;
-    }
-  }
-  
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+}
+
+/* Container Styles */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading Styles */
+h1 {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Location Search Styles */
+.location-search {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+#locationInput {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#searchLocation {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Geolocation Button Styles */
+.geolocation-btn {
+  margin-bottom: 20px;
+}
+
+#getCurrentLocation {
+  padding: 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Date Selection Styles */
+.date-selection {
+  margin-bottom: 20px;
+}
+
+#dateSelector {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Result Styles */
+.result {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.error-message {
+  color: red;
+}
