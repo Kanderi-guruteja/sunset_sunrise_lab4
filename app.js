@@ -120,13 +120,16 @@ $(document).ready(function () {
     });
 
     $("#getCurrentLocation").click(function () {
+        console.log("Fetching current location...");
         navigator.geolocation.getCurrentPosition(
             function (position) {
+                console.log("Geolocation success:", position);
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
                 reverseGeocode(latitude, longitude);
             },
             function (error) {
+                console.error("Geolocation error:", error);
                 displayError(`Geolocation Error: ${error.message}`);
             }
         );
