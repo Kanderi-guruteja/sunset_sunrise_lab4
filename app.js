@@ -77,6 +77,9 @@ $(document).ready(function () {
             method: "GET",
             success: function (reverseGeocodeData) {
                 const locationName = reverseGeocodeData[0]?.display_name || "Unknown Location";
+                const today = new Date().toISOString().split('T')[0];
+                $("#dateSelector").val(today);
+                fetchSunriseSunsetData(latitude, longitude, today);
                 $("#locationInput").val(locationName);
             },
             error: function (error) {
@@ -121,8 +124,6 @@ $(document).ready(function () {
             function (position) {
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
-                const selectedDate = $("#dateSelector").val();
-                fetchSunriseSunsetData(latitude, longitude, selectedDate);
                 reverseGeocode(latitude, longitude);
             },
             function (error) {
