@@ -69,25 +69,6 @@ $(document).ready(function () {
         resultElement.html(`<p class="error-message">${message}</p>`);
     }
 
-    function reverseGeocode(latitude, longitude) {
-        const reverseGeocodeApiUrl = `https://geocode.maps.co/reverse?q=${latitude},${longitude}`;
-
-        $.ajax({
-            url: reverseGeocodeApiUrl,
-            method: "GET",
-            success: function (reverseGeocodeData) {
-                const locationName = reverseGeocodeData[0]?.display_name || "Unknown Location";
-                const today = new Date().toISOString().split('T')[0];
-                $("#dateSelector").val(today);
-                fetchSunriseSunsetData(latitude, longitude, today);
-                $("#locationInput").val(locationName);
-            },
-            error: function (error) {
-                console.error(`Reverse Geocode API Error: ${error.responseJSON.status}`);
-            },
-        });
-    }
-
     $("#today").click(function () {
         const today = new Date().toISOString().split('T')[0];
         $("#dateSelector").val(today);
@@ -120,16 +101,14 @@ $(document).ready(function () {
     });
 
     $("#getCurrentLocation").click(function () {
-        console.log("Fetching current location...");
         navigator.geolocation.getCurrentPosition(
             function (position) {
-                console.log("Geolocation success:", position);
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
-                reverseGeocode(latitude, longitude);
+                const selectedDate = $("#dateSelector").val();
+                fetchSunriseSunsetData(latitude, longitude, selectedDate);
             },
             function (error) {
-                console.error("Geolocation error:", error);
                 displayError(`Geolocation Error: ${error.message}`);
             }
         );
