@@ -69,6 +69,22 @@ $(document).ready(function () {
         resultElement.html(`<p class="error-message">${message}</p>`);
     }
 
+    function reverseGeocode(latitude, longitude) {
+        const reverseGeocodeApiUrl = `https://geocode.maps.co/reverse?q=${latitude},${longitude}`;
+
+        $.ajax({
+            url: reverseGeocodeApiUrl,
+            method: "GET",
+            success: function (reverseGeocodeData) {
+                const locationName = reverseGeocodeData[0]?.display_name || "Unknown Location";
+                $("#locationInput").val(locationName);
+            },
+            error: function (error) {
+                console.error(`Reverse Geocode API Error: ${error.responseJSON.status}`);
+            },
+        });
+    }
+
     $("#today").click(function () {
         const today = new Date().toISOString().split('T')[0];
         $("#dateSelector").val(today);
@@ -107,6 +123,7 @@ $(document).ready(function () {
                 const longitude = position.coords.longitude;
                 const selectedDate = $("#dateSelector").val();
                 fetchSunriseSunsetData(latitude, longitude, selectedDate);
+                reverseGeocode(latitude, longitude);
             },
             function (error) {
                 displayError(`Geolocation Error: ${error.message}`);
