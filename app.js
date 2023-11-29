@@ -100,19 +100,25 @@ $(document).ready(function () {
         }
     });
 
-    $("#getCurrentLocation").click(function () {
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                const selectedDate = $("#dateSelector").val();
-                fetchSunriseSunsetData(latitude, longitude, selectedDate);
-            },
-            function (error) {
-                displayError(`Geolocation Error: ${error.message}`);
-            }
-        );
-    });
+   $("#getCurrentLocation").click(function () {
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Set selectedDate to the current date
+            const today = new Date().toISOString().split('T')[0];
+            $("#dateSelector").val(today);
+
+            // Fetch sunrise/sunset data with current location and date
+            fetchSunriseSunsetData(latitude, longitude, today);
+        },
+        function (error) {
+            displayError(`Geolocation Error: ${error.message}`);
+        }
+    );
+});
+
 
     $("#searchLocation").click(function () {
         const location = $("#locationInput").val();
