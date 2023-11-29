@@ -31,8 +31,11 @@ function fetchLocationCoordinates(location) {
 
 // Function to fetch sunrise/sunset data using latitude, longitude, and date
 function fetchSunriseSunsetData(latitude, longitude, date) {
-    // Construct the sunrise/sunset API URL
-    const sunriseSunsetApiUrl = `https://api.sunrisesunset.io/json?lat=${latitude}&lng=${longitude}&formatted=0&date=${date}`;
+    // Convert the date to a string in the user's local time zone
+    const localDateString = new Date(date).toLocaleDateString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+    
+    // Construct the sunrise/sunset API URL with the local date
+    const sunriseSunsetApiUrl = `https://api.sunrisesunset.io/json?lat=${latitude}&lng=${longitude}&formatted=0&date=${localDateString}`;
 
     // Make an AJAX request to the sunrise/sunset API
     $.ajax({
@@ -47,7 +50,6 @@ function fetchSunriseSunsetData(latitude, longitude, date) {
         },
     });
 }
-
 // Function to update the dashboard with sunrise/sunset results and selected date
 function updateDashboard(results, selectedDate) {
     const resultElement = $("#result");
